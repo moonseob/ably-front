@@ -1,14 +1,14 @@
 import { createAction, props } from '@ngrx/store';
 import { AblyErrorResponse } from 'src/app/common/model/http-errors.model';
 import {
-  LoginRequestBody,
+  LoginRequestPayload,
   LoginResponse,
   LogoutResponse,
 } from '../model/auth.model';
 
 export const requestLogin = createAction(
   '[Auth] Request Login',
-  props<{ body: LoginRequestBody }>(),
+  props<{ payload: LoginRequestPayload }>(),
 );
 
 export const requestLoginSuccess = createAction(

@@ -1,0 +1,11 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <label for="email">이메일</label>
+  <input
+    id="email"
+    type="text"
+    formControlName="email"
+    autocomplete="email"
+  />
+  <input id="password" type="password" style="display: none;">
+  <button type="submit">다음</button>
+</form>

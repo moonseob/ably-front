@@ -1,0 +1,11 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <input type="text" autocomplete="email" style="display: none;">
+  <input type="password" autocomplete="current-password" style="display: none;">
+  <label for="newPassword">새로운 비밀번호</label>
+  <input id="newPassword" type="password" formControlName="newPassword" />
+  <label for="newPasswordConfirm">새로운 비밀번호 확인</label>
+  <input id="newPasswordConfirm" type="password" formControlName="newPasswordConfirm" />
+  <button type="submit">다음</button>
+</form>
+
+<p>errors: {{ formGroup.errors | json }}</p>

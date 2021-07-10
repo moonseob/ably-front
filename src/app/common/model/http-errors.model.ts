@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export interface AblyErrorResponse extends HttpErrorResponse {
   error: {
     error?: {
-      message: string;
+      message: AblyErrorMessage;
     };
   };
 }

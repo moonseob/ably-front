@@ -18,8 +18,8 @@ export class AuthEffects {
   loadToken$ = createEffect(() =>
     this.actions$.pipe(
       ofType(requestLogin),
-      switchMap(({ body }) =>
-        this.accService.login(body).pipe(
+      switchMap(({ payload }) =>
+        this.accService.login(payload).pipe(
           map((res) => requestLoginSuccess({ res })),
           catchError((err) => of(requestLoginFailure({ err }))),
         ),

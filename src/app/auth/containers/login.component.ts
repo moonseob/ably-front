@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
     if (this.formGroup.invalid) {
       return;
     }
-    this.store.dispatch(requestLogin({ body: this.formGroup.value }));
+    this.store.dispatch(requestLogin({ payload: this.formGroup.value }));
   }
 
   ngOnInit(): void {}

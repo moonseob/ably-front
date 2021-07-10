@@ -10,6 +10,11 @@ const routes: Routes = [
     path: 'user',
     loadChildren: async () => (await import('./user/user.module')).UserModule,
   },
+  {
+    path: 'reset',
+    loadChildren: async () =>
+      (await import('./reset/reset.module')).ResetModule,
+  },
 ];
 
 @NgModule({

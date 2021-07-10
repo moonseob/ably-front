@@ -8,6 +8,7 @@ import { User } from '../models/user.model';
   providedIn: 'root',
 })
 export class UserApiService {
+  /** 회원 정보 조회 */
   getUser(): Observable<User> {
     return this.httpClient.get<User>(`${environment.apiHost}/user`);
   }

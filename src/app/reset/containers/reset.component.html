@@ -1,0 +1,20 @@
+<h1>비밀번호 재설정</h1>
+<ng-container [ngSwitch]="step">
+  <app-request-code
+    *ngSwitchCase="1"
+    (req)="requestCode($event)"
+  ></app-request-code>
+  <app-validate-code
+    *ngSwitchCase="2"
+    (req)="validateCode($event)"
+  ></app-validate-code>
+  <app-reset-form *ngSwitchCase="3"
+    (req)="updatePassword($event)"
+  ></app-reset-form>
+  <p *ngSwitchCase="4">완료되었습니다.<br><a routerLink="/login">로그인 화면으로 가기</a></p>
+</ng-container>
+
+<p>step: {{ step | json }}</p>
+<p>issueToken: {{ issueToken | json }}</p>
+<p>errorMessage: {{ errorMessage | json }}</p>
+<p>timer$: {{ timer$ | async | json }}</p>

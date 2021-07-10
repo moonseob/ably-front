@@ -1,8 +1,9 @@
+<h1>로그인</h1>
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <label for="login-email">이메일</label>
-  <input id="login-email" type="text" formControlName="email" />
+  <input id="login-email" type="text" autocomplete="email" formControlName="email" />
   <label for="login-password">비밀번호</label>
-  <input id="login-password" type="text" formControlName="password" />
+  <input id="login-password" type="password" autocomplete="current-password" formControlName="password" />
   <button type="submit" [disabled]="isLoading$ | async">로그인</button>
   <span>에러 메시지: {{ errorMsg$ | async }}</span>
 </form>
