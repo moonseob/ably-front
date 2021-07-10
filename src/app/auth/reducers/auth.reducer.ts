@@ -18,7 +18,8 @@ export interface State {
 }
 
 export const initialState: State = {
-  accessToken: null,
+  // android webview 등 localstorage를 지원하지 않는 환경이 있음
+  accessToken: window.localStorage?.getItem('bearerToken') ?? null,
   loginLoading: false,
   errorMessage: null,
 };

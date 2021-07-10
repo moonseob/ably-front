@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import * as fromRoot from '../../reducers';
+import * as fromRoot from '../../common/reducers';
 import { requestLogin } from '../actions/auth.actions';
 
 @Component({
@@ -23,8 +23,8 @@ export class LoginComponent implements OnInit {
     password: ['', Validators.required],
   });
 
-  isLoading$ = this.store.select(fromRoot.getLoginIsLoading);
-  errorMsg$ = this.store.select(fromRoot.getLoginErrorMessage);
+  isLoading$ = this.store.select(fromRoot.selectLoginIsLoading);
+  errorMsg$ = this.store.select(fromRoot.selectLoginErrorMessage);
 
   onSubmit() {
     if (this.formGroup.invalid) {

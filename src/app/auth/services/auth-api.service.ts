@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import {
   LoginRequestBody,
   LoginResponse,
-} from 'src/app/auth/model/login-api.model';
+  LogoutResponse,
+} from 'src/app/auth/model/auth.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -15,6 +16,13 @@ export class AuthApiService {
     return this.httpClient.post<LoginResponse>(
       `${environment.apiHost}/login`,
       body,
+    );
+  }
+
+  logout(): Observable<LogoutResponse> {
+    return this.httpClient.post<LogoutResponse>(
+      `${environment.apiHost}/logout`,
+      null,
     );
   }
 

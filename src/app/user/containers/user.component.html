@@ -1,0 +1,8 @@
+<article *ngIf="user$ | async as user">
+  <p>name: {{ user.name }}</p>
+  <p>email: {{ user.email }}</p>
+  <p>profile_image: {{ user.profileImage }}</p>
+</article>
+<button type="button" (click)="logout()">로그아웃</button>
+loading: {{ isLoading$ | async | json }}
+error: {{ errorMessage$ | async | json }}
