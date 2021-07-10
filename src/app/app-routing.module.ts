@@ -6,6 +6,10 @@ const routes: Routes = [
     path: 'login',
     loadChildren: async () => (await import('./auth/auth.module')).AuthModule,
   },
+  {
+    path: 'user',
+    loadChildren: async () => (await import('./user/user.module')).UserModule,
+  },
 ];
 
 @NgModule({

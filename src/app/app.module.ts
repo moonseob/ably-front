@@ -7,8 +7,11 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AuthEffects } from './auth/effects/auth.effects';
+import { metaReducers, reducers } from './common/reducers';
+import { AuthInterceptor } from './common/services/auth.interceptor';
 import { ErrorInterceptor } from './common/services/error.interceptor';
-import { metaReducers, reducers } from './reducers';
+import { UserEffects } from './user/effects/user.effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,12 +27,17 @@ import { metaReducers, reducers } from './reducers';
       },
     }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([AuthEffects, UserEffects]),
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
       multi: true,
     },
   ],
