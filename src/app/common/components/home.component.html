@@ -13,6 +13,7 @@
       <button
         class="button fa logout"
         type="button"
+        [disabled]="isLogoutLoading$ | async"
         (click)="logout()"
       >로그아웃</button>
     </ng-container>

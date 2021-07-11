@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import {
+  Actions,
+  createEffect,
+  ofType,
+  ROOT_EFFECTS_INIT,
+} from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import {
   catchError,
@@ -9,8 +15,11 @@ import {
   switchMap,
   switchMapTo,
   tap,
+  withLatestFrom,
 } from 'rxjs/operators';
 import { AuthApiService } from 'src/app/auth/services/auth-api.service';
+import { loadUser } from 'src/app/user/actions/user.actions';
+import * as fromRoot from '../../common/reducers';
 import {
   removeStoredToken,
   requestLogin,
@@ -23,13 +32,25 @@ import {
 
 @Injectable()
 export class AuthEffects {
-  loadToken$ = createEffect(() =>
+  login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(requestLogin),
       switchMap(({ payload }) =>
         this.accService.login(payload).pipe(
           map((res) => requestLoginSuccess({ res })),
           catchError((err) => of(requestLoginFailure({ err }))),
+        ),
+      ),
+    ),
+  );
+
+  logout$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(requestLogout),
+      switchMapTo(
+        this.accService.logout().pipe(
+          map((res) => requestLogoutSuccess({ res })),
+          catchError((err) => of(requestLogoutFailure({ err }))),
         ),
       ),
     ),
@@ -48,25 +69,21 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  loginRedirect$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(requestLoginSuccess),
-        tap(() => {
-          this.router.navigate(['user']);
-        }),
-      ),
-    { dispatch: false },
+  loadUserOnLoginSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(requestLoginSuccess),
+      map(() => loadUser()),
+    ),
   );
 
-  logout$ = createEffect(() =>
+  checkLoginOnLoad$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(requestLogout),
-      switchMapTo(
-        this.accService.logout().pipe(
-          map((res) => requestLogoutSuccess({ res })),
-          catchError((err) => of(requestLogoutFailure({ err }))),
-        ),
+      ofType(ROOT_EFFECTS_INIT),
+      switchMapTo(of(window.localStorage?.getItem('bearerToken'))),
+      filter((token) => !!token),
+      map((token) => token as string),
+      map((accessToken: string) =>
+        requestLoginSuccess({ res: { accessToken } }),
       ),
     ),
   );
@@ -78,12 +95,14 @@ export class AuthEffects {
     ),
   );
 
-  logoutRedirect$ = createEffect(
+  redirectAfterAuthChange$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(requestLogoutSuccess),
-        tap(() => {
-          this.router.navigate(['login']);
+        ofType(requestLogoutSuccess, requestLoginSuccess),
+        withLatestFrom(this.store.select(fromRoot.selectAuthReturnUrl)),
+        map(([, returnUrl]) => this.router.createUrlTree([returnUrl])),
+        tap((urlTree) => {
+          this.router.navigateByUrl(urlTree);
         }),
       ),
     { dispatch: false },
@@ -102,7 +121,8 @@ export class AuthEffects {
 
   constructor(
     private actions$: Actions,
-    private router: Router,
     private accService: AuthApiService,
+    private router: Router,
+    private store: Store<fromRoot.State>,
   ) {}
 }

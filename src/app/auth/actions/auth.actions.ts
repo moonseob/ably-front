@@ -6,9 +6,11 @@ import {
   LogoutResponse,
 } from '../model/auth.model';
 
+export const loginInit = createAction('[Auth] Login Init');
+
 export const requestLogin = createAction(
   '[Auth] Request Login',
-  props<{ payload: LoginRequestPayload }>(),
+  props<{ payload: LoginRequestPayload; returnUrl?: string }>(),
 );
 
 export const requestLoginSuccess = createAction(
@@ -21,7 +23,10 @@ export const requestLoginFailure = createAction(
   props<{ err: AblyErrorResponse }>(),
 );
 
-export const requestLogout = createAction('[Auth] Request Logout');
+export const requestLogout = createAction(
+  '[Auth] Request Logout',
+  props<{ returnUrl?: string }>(), // returnUrl은 angular route
+);
 
 export const requestLogoutSuccess = createAction(
   '[Auth] Request Logout Success',

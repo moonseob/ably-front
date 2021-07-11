@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../common/reducers';
-import { requestLogin } from '../actions/auth.actions';
+import { loginInit, requestLogin } from '../actions/auth.actions';
 
 @Component({
   selector: 'app-login',
@@ -27,10 +27,14 @@ export class LoginComponent implements OnInit {
     if (this.formGroup.invalid) {
       return;
     }
-    this.store.dispatch(requestLogin({ payload: this.formGroup.value }));
+    this.store.dispatch(
+      requestLogin({ payload: this.formGroup.value, returnUrl: '/user' }),
+    );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.dispatch(loginInit());
+  }
 
   constructor(private fb: FormBuilder, private store: Store<fromRoot.State>) {}
 }

@@ -43,6 +43,10 @@ export const selectLoginIsLoading = createSelector(
   selectAuthState,
   (state) => state.loginLoading,
 );
+export const selectLogoutIsLoading = createSelector(
+  selectAuthState,
+  (state) => state.logoutLoading,
+);
 export const selectAccessToken = createSelector(
   selectAuthState,
   (state) => state.accessToken,
@@ -50,6 +54,10 @@ export const selectAccessToken = createSelector(
 export const selectLoginErrorMessage = createSelector(
   selectAuthState,
   (state) => state.errorMessage,
+);
+export const selectAuthReturnUrl = createSelector(
+  selectAuthState,
+  (state) => state.returnUrl,
 );
 
 /* User Reducers */

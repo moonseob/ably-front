@@ -8,6 +8,11 @@
     </article>
   </section>
   <section class="sidebar">
-    <button class="button accent fa logout" type="button" (click)="logout()">로그아웃</button>
+    <button
+      class="button accent fa logout"
+      type="button"
+      (click)="logout()"
+      [disabled]="isLogoutLoading$ | async"
+    >로그아웃</button>
   </section>
 </main>

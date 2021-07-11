@@ -1,4 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
+import { requestLogoutSuccess } from 'src/app/auth/actions/auth.actions';
 import {
   AblyErrorMessage,
   handleError,
@@ -44,5 +45,9 @@ export const reducerInternal = createReducer(
     ...state,
     loading: false,
     errorMessage: handleError(err),
+  })),
+  on(requestLogoutSuccess, (state) => ({
+    ...state,
+    user: null,
   })),
 );
