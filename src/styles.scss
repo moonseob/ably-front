@@ -1,12 +1,24 @@
 // import Roboto, Noto Sans KR from Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto:wght@300;400;700&display=swap');
 
-$border: 3px solid black;
 // global palette
 :root {
   --error: red;
-  --bg: hsl(0, 0%, 80%);
+  --body-bg: hsl(0, 0%, 80%);
+  --border-color: black;
+  --content-bg: hsl(0, 0%, 100%);
+  --button-color: hsl(60, 100%, 57%);
 }
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: hsl(0, 0%, 90%);
+    --body-bg: hsl(0, 0%, 30%);
+    --border-color: hsl(0, 0%, 90%);
+    --content-bg: hsl(0, 0%, 20%);
+  }
+}
+
+$border: 3px solid var(--border-color);
 
 // layout
 [lang='ko'] {
@@ -16,7 +28,7 @@ body {
   min-width: 360px;
   font-size: 18px;
   font-family: 'Noto Sans KR', 'Roboto', sans-serif;
-  background-color: var(--bg);
+  background-color: var(--body-bg);
   line-height: 1.4;
   padding: 2em;
   box-sizing: border-box;
@@ -28,7 +40,7 @@ body {
   width: 100%;
   box-sizing: border-box;
   height: 600px;
-  border: 3px solid black;
+  border: $border;
   position: relative;
 }
 
@@ -37,7 +49,7 @@ body {
   bottom: 100%;
   margin-bottom: 1em;
   a {
-    color: gray;
+    color: currentColor;
     text-decoration: none;
     font-size: 0.9em;
     padding: 0.2em 0.6em;
@@ -58,7 +70,7 @@ section.main {
   flex: 2 1 0%;
   padding: 2em;
   display: flex;
-  background-color: white;
+  background-color: var(--content-bg);
   flex-direction: column;
   justify-content: flex-start;
 }
@@ -79,20 +91,29 @@ section.sidebar {
     white-space: nowrap;
     text-overflow: ellipsis;
     outline: 0;
-    color: black;
+    color: currentColor;
     font-weight: bold;
     text-align: left;
     box-sizing: border-box;
     padding: 1em;
     line-height: 2.5em;
-    background-color: white;
+    background-color: var(--content-bg);
     position: relative;
+    &:disabled,
+    &.disabled {
+      &::before {
+        // disabled를 "로딩 중" 상태로 사용함
+        content: '\f1ce' !important;
+        animation: fa-spin 2s linear infinite;
+        display: inline-block;
+      }
+    }
     &:active,
     &:disabled,
     &.disabled {
       &::after {
         content: '';
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.2);
         position: absolute;
         display: block;
         z-index: 0;
@@ -103,7 +124,8 @@ section.sidebar {
       }
     }
     &.accent {
-      background-color: rgb(255, 255, 37);
+      color: black;
+      background-color: var(--button-color);
     }
   }
 }
@@ -111,7 +133,7 @@ section.sidebar {
 // append font awesome icons
 .fa::before {
   font-family: 'Font Awesome 5 Free';
-  padding-inline-end: 0.4em;
+  margin-inline-end: 0.4em;
 }
 .home::before {
   content: '\f015';
@@ -122,7 +144,7 @@ section.sidebar {
 .login::before {
   content: '\f2f6';
 }
-.login::before {
+.logout::before {
   content: '\f2f5';
 }
 .error::before {
@@ -165,16 +187,18 @@ main > form {
 
 input[type='text'],
 input[type='password'] {
-  border: 1px solid black;
+  border: 1px solid currentColor;
+  color: currentColor;
   padding: 0 1em;
   box-sizing: border-box;
   font-size: inherit;
   border-radius: 0;
-  background: white;
+  background: var(--body-bg);
   line-height: 2.5em;
+
   &:focus {
-    border-color: black !important;
-    box-shadow: inset 0 0 0 1px black;
+    border-color: currentColor !important;
+    box-shadow: inset 0 0 0 1px currentColor;
     outline: 0;
   }
   &:hover {
@@ -215,5 +239,26 @@ input[type='password'] {
   input[type='text'],
   input[type='password'] {
     font-size: 16px;
+  }
+}
+
+.visually-hidden {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0 !important;
+  border: 0 !important;
+  height: 1px !important;
+  width: 1px !important;
+  overflow: hidden;
+}
+
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
   }
 }
