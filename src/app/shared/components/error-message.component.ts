@@ -18,8 +18,6 @@ import { Component, Input } from '@angular/core';
         font-size: 0.9em;
         margin-top: 2em;
         margin-bottom: 0;
-        color: black;
-        background-color: white;
         border: 1px solid var(--error);
         box-sizing: border-box;
         min-height: 2.5em;
