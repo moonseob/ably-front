@@ -10,7 +10,7 @@ import { UserComponent } from './containers/user.component';
     RouterModule.forChild([
       {
         path: '',
-        pathMatch: 'exact',
+        pathMatch: 'full',
         component: UserComponent,
       },
     ]),

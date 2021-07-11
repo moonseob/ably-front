@@ -1,8 +1,13 @@
-<article *ngIf="user$ | async as user">
-  <p>name: {{ user.name }}</p>
-  <p>email: {{ user.email }}</p>
-  <p>profile_image: {{ user.profileImage }}</p>
-</article>
-<button type="button" (click)="logout()">로그아웃</button>
-loading: {{ isLoading$ | async | json }}
-error: {{ errorMessage$ | async | json }}
+<main>
+  <section class="main">
+    <h1>내 정보 보기</h1>
+    <article *ngIf="user$ | async as user">
+      <img class="profile-image" [src]="user.profileImage">
+      <p class="name">{{ user.name }}</p>
+      <p class="email">{{ user.email }}</p>
+    </article>
+  </section>
+  <section class="sidebar">
+    <button class="button accent" type="button" (click)="logout()"><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;로그아웃</button>
+  </section>
+</main>

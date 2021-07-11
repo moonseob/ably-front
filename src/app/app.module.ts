@@ -8,13 +8,15 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthEffects } from './auth/effects/auth.effects';
+import { HomeComponent } from './common/components/home.component';
+import { InvalidTokenComponent } from './common/components/invalid-token.component';
 import { metaReducers, reducers } from './common/reducers';
 import { AuthInterceptor } from './common/services/auth.interceptor';
 import { ErrorInterceptor } from './common/services/error.interceptor';
 import { UserEffects } from './user/effects/user.effects';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, HomeComponent, InvalidTokenComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

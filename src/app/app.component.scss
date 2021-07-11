@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+  height: min-content;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.floating-container {
+  max-width: 800px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 600px;
+  background-color: white;
+  border: 3px solid black;
+  position: relative;
+}
+
+.offset-top {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 1em;
+  a {
+    color: gray;
+    text-decoration: none;
+    font-size: 0.9em;
+    padding: 0.2em 0.6em;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+}

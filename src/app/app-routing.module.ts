@@ -1,7 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './common/components/home.component';
+import { InvalidTokenComponent } from './common/components/invalid-token.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    component: HomeComponent,
+  },
+  {
+    path: 'invalid-token',
+    component: InvalidTokenComponent,
+  },
   {
     path: 'login',
     loadChildren: async () => (await import('./auth/auth.module')).AuthModule,

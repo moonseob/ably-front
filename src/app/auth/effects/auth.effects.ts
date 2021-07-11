@@ -2,9 +2,17 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, switchMapTo, tap } from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  map,
+  switchMap,
+  switchMapTo,
+  tap,
+} from 'rxjs/operators';
 import { AuthApiService } from 'src/app/auth/services/auth-api.service';
 import {
+  removeStoredToken,
   requestLogin,
   requestLoginFailure,
   requestLoginSuccess,
@@ -31,11 +39,10 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(requestLoginSuccess),
-        tap(({ res }) => {
-          window.localStorage?.setItem(
-            'bearerToken',
-            `${res?.accessToken ?? ''}`,
-          );
+        map(({ res }) => res.accessToken),
+        filter((token) => !!token),
+        tap((token) => {
+          window.localStorage?.setItem('bearerToken', `${token}`);
         }),
       ),
     { dispatch: false },
@@ -64,15 +71,11 @@ export class AuthEffects {
     ),
   );
 
-  removeStoredToken$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(requestLogoutSuccess),
-        tap(() => {
-          window.localStorage?.removeItem('bearerToken');
-        }),
-      ),
-    { dispatch: false },
+  onLogoutSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(requestLogoutSuccess),
+      map(() => removeStoredToken()),
+    ),
   );
 
   logoutRedirect$ = createEffect(
@@ -81,6 +84,17 @@ export class AuthEffects {
         ofType(requestLogoutSuccess),
         tap(() => {
           this.router.navigate(['login']);
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  removeStoredToken$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(removeStoredToken),
+        tap(() => {
+          window.localStorage?.removeItem('bearerToken');
         }),
       ),
     { dispatch: false },

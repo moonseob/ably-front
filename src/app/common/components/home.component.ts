@@ -9,7 +9,14 @@ import * as fromRoot from '../../common/reducers';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  styles: [
+    `
+      :host {
+        display: block;
+        height: 100%;
+      }
+    `,
+  ],
 })
 export class HomeComponent {
   isLoggedIn$ = this.authService.isLoggedIn().pipe(shareReplay(1));

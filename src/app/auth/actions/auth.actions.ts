@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AblyErrorResponse } from 'src/app/common/model/http-errors.model';
+import { AblyErrorResponse } from 'src/app/shared/model/http-errors.model';
 import {
   LoginRequestPayload,
   LoginResponse,
@@ -31,4 +31,8 @@ export const requestLogoutSuccess = createAction(
 export const requestLogoutFailure = createAction(
   '[Auth] Request Logout Failure',
   props<{ err: AblyErrorResponse }>(),
+);
+
+export const removeStoredToken = createAction(
+  '[Auth] Remove Token from LocalStorage',
 );

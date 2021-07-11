@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AblyErrorResponse } from 'src/app/common/model/http-errors.model';
+import { AblyErrorResponse } from 'src/app/shared/model/http-errors.model';
 import { User } from '../models/user.model';
 
 export const loadUser = createAction('[User] Load');

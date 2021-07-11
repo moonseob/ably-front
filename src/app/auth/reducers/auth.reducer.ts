@@ -2,11 +2,12 @@ import { createReducer, on } from '@ngrx/store';
 import {
   AblyErrorMessage,
   handleError,
-} from 'src/app/common/model/http-errors.model';
+} from 'src/app/shared/model/http-errors.model';
 import {
   requestLogin,
   requestLoginFailure,
   requestLoginSuccess,
+  requestLogoutSuccess,
 } from '../actions/auth.actions';
 
 export const featureKey = 'auth';
@@ -44,5 +45,10 @@ export const reducerInternal = createReducer(
     ...state,
     loginLoading: false,
     errorMessage: handleError(err),
+  })),
+  on(requestLogoutSuccess, (state, { res }) => ({
+    ...state,
+    loginLoading: false,
+    accessToken: null,
   })),
 );

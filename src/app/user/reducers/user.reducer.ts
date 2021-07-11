@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import {
   AblyErrorMessage,
   handleError,
-} from 'src/app/common/model/http-errors.model';
+} from 'src/app/shared/model/http-errors.model';
 import {
   loadUser,
   loadUserFailure,

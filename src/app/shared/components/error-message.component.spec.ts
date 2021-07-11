@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ValidateCodeComponent } from './validate-code.component';
+import { ErrorMessageComponent } from './error-message.component';
 
-describe('ValidateCodeComponent', () => {
-  let component: ValidateCodeComponent;
-  let fixture: ComponentFixture<ValidateCodeComponent>;
+describe('ErrorMessageComponent', () => {
+  let component: ErrorMessageComponent;
+  let fixture: ComponentFixture<ErrorMessageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ValidateCodeComponent ]
+      declarations: [ ErrorMessageComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ValidateCodeComponent);
+    fixture = TestBed.createComponent(ErrorMessageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

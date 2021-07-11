@@ -23,7 +23,6 @@ export class AuthInterceptor implements HttpInterceptor {
     const authRequired = this.authedEndpoints.some((url) =>
       request.url.includes(url),
     );
-    console.log('authRequired: ', authRequired);
     if (authRequired) {
       return this.store.select(fromRoot.selectLoginIsLoading).pipe(
         filter((isLoading) => isLoading === false),

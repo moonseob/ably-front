@@ -1,11 +1,20 @@
-<h1>로그인</h1>
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-  <label for="login-email">이메일</label>
-  <input id="login-email" type="text" autocomplete="email" formControlName="email" />
-  <label for="login-password">비밀번호</label>
-  <input id="login-password" type="password" autocomplete="current-password" formControlName="password" />
-  <button type="submit" [disabled]="isLoading$ | async">로그인</button>
-  <span>에러 메시지: {{ errorMsg$ | async }}</span>
-</form>
-<a routerLink="/reset">비밀번호 재설정</a>
-{{ formGroup.value | json }}
+<main>
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <section class="main">
+      <h1>로그인</h1>
+      <div class="form-field">
+        <label for="login-email">이메일</label>
+        <input id="login-email" type="text" autocomplete="email" formControlName="email" />
+      </div>
+      <div class="form-field">
+        <label for="login-password">비밀번호</label>
+        <input id="login-password" type="password" autocomplete="current-password" formControlName="password" />
+      </div>
+      <app-error-message *ngIf="errorMsg$ | async as error" [message]="error"></app-error-message>
+    </section>
+    <section class="sidebar">
+      <a class="button" routerLink="/reset"><i class="far fa-question-circle"></i>&nbsp;&nbsp;비밀번호 재설정</a>
+      <button type="submit" class="button accent" [disabled]="isLoading$ | async"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;로그인</button>
+    </section>
+  </form>
+</main>

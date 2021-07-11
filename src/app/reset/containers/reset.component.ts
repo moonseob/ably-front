@@ -2,14 +2,19 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
-import { interval, Observable, of } from 'rxjs';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { interval, Observable, of, Subject } from 'rxjs';
 import { map, startWith, takeWhile } from 'rxjs/operators';
+import { removeStoredToken } from 'src/app/auth/actions/auth.actions';
 import {
   AblyErrorMessage,
   handleError,
-} from 'src/app/common/model/http-errors.model';
+} from 'src/app/shared/model/http-errors.model';
+import * as fromRoot from '../../common/reducers';
 import {
   ResetCodeValidatationPayload,
   ResetIssueToken,
@@ -30,17 +35,36 @@ enum ResetStep {
   styleUrls: ['./reset.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export class ResetComponent implements OnInit {
+export class ResetComponent implements OnInit, OnDestroy {
+  ngSubscribe$ = new Subject();
   /** 사용자 화면의 진행 상태 */
   step = ResetStep.RequestCode;
-  errorMessage!: AblyErrorMessage;
+  errorMessage!: AblyErrorMessage | null;
 
   /** 인증 코드 발급 요청 토큰 */
   issueToken!: ResetIssueToken['issueToken'];
   /** 인증 코드 만료 시각 */
   expiresAt!: Date;
 
-  email!: string;
+  // Form Controls
+  emailControl = this.fb.control('', {
+    validators: [Validators.required, Validators.email],
+    updateOn: 'blur',
+  });
+  validationCodeControl = this.fb.control('', {
+    validators: [Validators.required, Validators.pattern(/\d{6}/)],
+    updateOn: 'blur',
+  });
+  resetFormGroup = this.fb.group(
+    {
+      newPassword: ['', Validators.required],
+      newPasswordConfirm: [''], // add validator at onInit()
+    },
+    {
+      updateOn: 'blur',
+    },
+  );
+
   timer$!: Observable<{
     min: number;
     sec: number;
@@ -83,12 +107,44 @@ export class ResetComponent implements OnInit {
     );
   }
 
+  onNext() {
+    this.errorMessage = null;
+    switch (this.step) {
+      case ResetStep.RequestCode: {
+        const fc = this.emailControl;
+        fc.markAsDirty();
+        if (fc.invalid) {
+          return;
+        }
+        this.requestCode(fc.value);
+        break;
+      }
+      case ResetStep.ValidateCode: {
+        const fc = this.validationCodeControl;
+        fc.markAsDirty();
+        if (fc.invalid) {
+          return;
+        }
+        this.validateCode(fc.value);
+        break;
+      }
+      case ResetStep.ResetForm: {
+        const fg = this.resetFormGroup;
+        Object.values(fg.controls).forEach((fc) => fc.markAsDirty());
+        if (fg.invalid) {
+          return;
+        }
+        this.updatePassword(fg.controls.newPassword.value);
+        break;
+      }
+    }
+  }
+
   requestCode(email: string) {
     this.service.reqeustResetCode(email).subscribe({
       next: (res) => {
         this.issueToken = res.issueToken;
         this.timer$ = this.getTimer(res.remainMillisecond);
-        this.email = email;
         this.step++;
         this.cdr.detectChanges();
       },
@@ -102,7 +158,7 @@ export class ResetComponent implements OnInit {
   validateCode(authCode: ResetCodeValidatationPayload['authCode']) {
     const payload = {
       authCode,
-      email: this.email,
+      email: this.emailControl.value,
       issueToken: this.issueToken,
     };
     this.service.validateResetCode(payload).subscribe({
@@ -121,13 +177,14 @@ export class ResetComponent implements OnInit {
 
   updatePassword(newPassword: ResetPayload['newPassword']) {
     const payload = {
-      email: this.email,
+      email: this.emailControl.value,
       confirmToken: this.confirmToken,
       newPassword,
       newPasswordConfirm: newPassword,
     };
     this.service.requestReset(payload).subscribe({
       next: (res) => {
+        this.store.dispatch(removeStoredToken());
         this.step++;
         this.cdr.detectChanges();
       },
@@ -139,11 +196,30 @@ export class ResetComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // 비밀번호 확인 필드에 일치하는지 여부 확인 validator 추가
+    const { newPassword, newPasswordConfirm } = this.resetFormGroup.controls;
+    newPasswordConfirm.setValidators([
+      ({ value }) =>
+        value.toString() !== newPassword.value.toString()
+          ? { mismatch: true }
+          : null,
+    ]);
+    newPassword.valueChanges.subscribe(() =>
+      newPasswordConfirm.updateValueAndValidity(),
+    );
+
     this.cdr.detectChanges();
   }
 
+  ngOnDestroy() {
+    this.ngSubscribe$.next();
+    this.ngSubscribe$.complete();
+  }
+
   constructor(
+    private store: Store<fromRoot.State>,
     private service: ResetApiService,
     private cdr: ChangeDetectorRef,
+    private fb: FormBuilder,
   ) {}
 }
