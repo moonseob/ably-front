@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { interval, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, interval, Observable, of, Subject } from 'rxjs';
 import { map, startWith, takeWhile } from 'rxjs/operators';
 import { removeStoredToken } from 'src/app/auth/actions/auth.actions';
 import {
@@ -37,6 +37,8 @@ enum ResetStep {
 })
 export class ResetComponent implements OnInit, OnDestroy {
   ngSubscribe$ = new Subject();
+  isLoading$ = new BehaviorSubject<boolean>(false);
+
   /** 사용자 화면의 진행 상태 */
   step = ResetStep.RequestCode;
   errorMessage!: AblyErrorMessage | null;
@@ -47,23 +49,26 @@ export class ResetComponent implements OnInit, OnDestroy {
   expiresAt!: Date;
 
   // Form Controls
-  emailControl = this.fb.control('', {
-    validators: [Validators.required, Validators.email],
-    updateOn: 'blur',
+  emailFormGroup = this.fb.group({
+    email: [
+      '',
+      {
+        validators: [Validators.required, Validators.email],
+      },
+    ],
   });
-  validationCodeControl = this.fb.control('', {
-    validators: [Validators.required, Validators.pattern(/\d{6}/)],
-    updateOn: 'blur',
+  validationCodeFormGroup = this.fb.group({
+    code: [
+      '',
+      {
+        validators: [Validators.required, Validators.pattern(/\d{6}/)],
+      },
+    ],
   });
-  resetFormGroup = this.fb.group(
-    {
-      newPassword: ['', Validators.required],
-      newPasswordConfirm: [''], // add validator at onInit()
-    },
-    {
-      updateOn: 'blur',
-    },
-  );
+  resetFormGroup = this.fb.group({
+    newPassword: ['', Validators.required],
+    newPasswordConfirm: [''], // add validator at onInit()
+  });
 
   timer$!: Observable<{
     min: number;
@@ -108,21 +113,24 @@ export class ResetComponent implements OnInit, OnDestroy {
   }
 
   onNext() {
+    this.isLoading$.next(true);
     this.errorMessage = null;
     switch (this.step) {
       case ResetStep.RequestCode: {
-        const fc = this.emailControl;
+        const fc = this.emailFormGroup.controls.email;
         fc.markAsDirty();
         if (fc.invalid) {
+          this.isLoading$.next(false);
           return;
         }
         this.requestCode(fc.value);
         break;
       }
       case ResetStep.ValidateCode: {
-        const fc = this.validationCodeControl;
+        const fc = this.validationCodeFormGroup.controls.code;
         fc.markAsDirty();
         if (fc.invalid) {
+          this.isLoading$.next(false);
           return;
         }
         this.validateCode(fc.value);
@@ -132,6 +140,7 @@ export class ResetComponent implements OnInit, OnDestroy {
         const fg = this.resetFormGroup;
         Object.values(fg.controls).forEach((fc) => fc.markAsDirty());
         if (fg.invalid) {
+          this.isLoading$.next(false);
           return;
         }
         this.updatePassword(fg.controls.newPassword.value);
@@ -146,10 +155,12 @@ export class ResetComponent implements OnInit, OnDestroy {
         this.issueToken = res.issueToken;
         this.timer$ = this.getTimer(res.remainMillisecond);
         this.step++;
+        this.isLoading$.next(false);
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = handleError(err);
+        this.isLoading$.next(false);
         this.cdr.detectChanges();
       },
     });
@@ -158,7 +169,7 @@ export class ResetComponent implements OnInit, OnDestroy {
   validateCode(authCode: ResetCodeValidatationPayload['authCode']) {
     const payload = {
       authCode,
-      email: this.emailControl.value,
+      email: this.emailFormGroup.value.email,
       issueToken: this.issueToken,
     };
     this.service.validateResetCode(payload).subscribe({
@@ -166,10 +177,12 @@ export class ResetComponent implements OnInit, OnDestroy {
         this.timer$ = of(null);
         this.confirmToken = res.confirmToken;
         this.step++;
+        this.isLoading$.next(false);
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = handleError(err);
+        this.isLoading$.next(false);
         this.cdr.detectChanges();
       },
     });
@@ -177,7 +190,7 @@ export class ResetComponent implements OnInit, OnDestroy {
 
   updatePassword(newPassword: ResetPayload['newPassword']) {
     const payload = {
-      email: this.emailControl.value,
+      email: this.emailFormGroup.value.email,
       confirmToken: this.confirmToken,
       newPassword,
       newPasswordConfirm: newPassword,
@@ -186,10 +199,12 @@ export class ResetComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.store.dispatch(removeStoredToken());
         this.step++;
+        this.isLoading$.next(false);
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = handleError(err);
+        this.isLoading$.next(false);
         this.cdr.detectChanges();
       },
     });

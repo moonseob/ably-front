@@ -11,8 +11,9 @@
     <button
       class="button accent fa logout"
       type="button"
-      (click)="logout()"
+      [class.loading]="isLogoutLoading$ | async"
       [disabled]="isLogoutLoading$ | async"
+      (click)="logout()"
     >로그아웃</button>
   </section>
 </main>

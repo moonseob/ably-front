@@ -5,19 +5,19 @@
       <ng-container [ngSwitch]="step">
         <ng-container *ngSwitchCase="1">
           <p>비밀번호를 재설정하기 위해 회원가입 시 사용하신 이메일을 알려주세요.</p>
-          <form (ngSubmit)="onNext()">
+          <form [formGroup]="emailFormGroup" (ngSubmit)="onNext()">
             <div class="form-field">
               <label for="email">이메일</label>
-              <input id="email" type="text" [formControl]="emailControl" autocomplete="email" />
-              <input id="password" type="password" style="display: none;">
-              <app-formcontrol-error-message [fc]="emailControl"></app-formcontrol-error-message>
+              <input id="email" type="text" formControlName="email" autocomplete="email" />
+              <input id="password" type="password" autocomplete="current-password" style="display: none;">
+              <app-formcontrol-error-message [fc]="emailFormGroup.controls.email"></app-formcontrol-error-message>
             </div>
             <button class="visually-hidden" type="submit"></button>
           </form>
         </ng-container>
         <ng-container *ngSwitchCase="2">
           <p>이메일로 보내드린 인증 코드를 아래에 입력해주세요.<br>인증 코드는 6자리 숫자입니다.</p>
-          <form (ngSubmit)="onNext()">
+          <form [formGroup]="validationCodeFormGroup" (ngSubmit)="onNext()">
             <div class="form-field">
               <label for="authCode">인증 코드</label>
               <input
@@ -25,9 +25,9 @@
                 type="text"
                 inputmode="numeric"
                 autocomplete="off"
-                [formControl]="validationCodeControl"
+                formControlName="code"
               />
-              <app-formcontrol-error-message [fc]="validationCodeControl"></app-formcontrol-error-message>
+              <app-formcontrol-error-message [fc]="validationCodeFormGroup.controls.code"></app-formcontrol-error-message>
             </div>
           </form>
           <button class="visually-hidden" type="submit"></button>
@@ -58,7 +58,13 @@
     <app-error-message *ngIf="!!errorMessage" [message]="errorMessage"></app-error-message>
   </section>
   <section class="sidebar" [ngSwitch]="step < 4">
-    <button *ngSwitchCase="true" class="button accent" (click)="onNext()">다음</button>
+    <button
+      *ngSwitchCase="true"
+      class="button fa accent"
+      [class.loading]="isLoading$ | async"
+      [disabled]="isLoading$ | async"
+      (click)="onNext()"
+    >다음</button>
     <a routerLink="/login" *ngSwitchCase="false" class="button fa login">로그인</a>
   </section>
 </main>

@@ -13,6 +13,7 @@
       <button
         class="button fa logout"
         type="button"
+        [class.loading]="isLogoutLoading$ | async"
         [disabled]="isLogoutLoading$ | async"
         (click)="logout()"
       >로그아웃</button>

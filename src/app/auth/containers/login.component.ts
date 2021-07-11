@@ -24,6 +24,9 @@ export class LoginComponent implements OnInit {
   errorMsg$ = this.store.select(fromRoot.selectLoginErrorMessage);
 
   onSubmit() {
+    Object.values(this.formGroup.controls).forEach((control) =>
+      control.markAsDirty(),
+    );
     if (this.formGroup.invalid) {
       return;
     }

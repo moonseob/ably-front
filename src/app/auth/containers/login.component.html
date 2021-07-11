@@ -16,7 +16,12 @@
     </section>
     <section class="sidebar">
       <a class="button fa question" routerLink="/reset">비밀번호 재설정</a>
-      <button type="submit" class="button accent fa login" [disabled]="isLoading$ | async">로그인</button>
+      <button
+        type="submit"
+        class="button accent fa login"
+        [class.disabled]="isLoading$ | async"
+        [disabled]="isLoading$ | async"
+      >로그인</button>
     </section>
   </form>
 </main>

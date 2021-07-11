@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map, switchMapTo } from 'rxjs/operators';
 import {
   LoginRequestPayload,
   LoginResponse,
@@ -32,9 +32,14 @@ export class AuthApiService {
   }
 
   isLoggedIn(): Observable<boolean> {
-    return this.store
-      .select(fromRoot.selectAccessToken)
-      .pipe(map((token) => token !== null));
+    return this.store.select(fromRoot.selectLoginIsLoading).pipe(
+      filter((isLoading) => isLoading === false),
+      switchMapTo(
+        this.store
+          .select(fromRoot.selectAccessToken)
+          .pipe(map((token) => token !== null)),
+      ),
+    );
   }
 
   constructor(
