@@ -1,0 +1,20 @@
+<main>
+  <section class="main">
+  <h1>환영합니다<span *ngIf="userName$ | async as name">, {{ name }}</span>!</h1>
+  </section>
+  <section class="sidebar" [ngSwitch]="isLoggedIn$ | async">
+    <a
+      *ngSwitchCase="false"
+      routerLink="/login"
+      class="button accent"
+    ><i class="far fa-user"></i>&nbsp;&nbsp;로그인</a>
+    <ng-container *ngSwitchCase="true">
+      <a class="button" routerLink="/user"><i class="far fa-user"></i>&nbsp;&nbsp;내 정보 보기</a>
+      <button
+        class="button"
+        type="button"
+        (click)="logout()"
+      ><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;로그아웃</button>
+    </ng-container>
+  </section>
+</main>
