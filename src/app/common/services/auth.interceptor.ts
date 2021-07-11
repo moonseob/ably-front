@@ -7,7 +7,7 @@ import {
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { filter, switchMap, switchMapTo, take } from 'rxjs/operators';
+import { filter, switchMap, take, withLatestFrom } from 'rxjs/operators';
 import * as fromRoot from '../reducers';
 
 @Injectable()
@@ -27,18 +27,15 @@ export class AuthInterceptor implements HttpInterceptor {
       return this.store.select(fromRoot.selectLoginIsLoading).pipe(
         filter((isLoading) => isLoading === false),
         take(1),
-        switchMapTo(
-          this.store.select(fromRoot.selectAccessToken).pipe(
-            switchMap((token) => {
-              const _request = request.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-              return next.handle(_request);
-            }),
-          ),
-        ),
+        withLatestFrom(this.store.select(fromRoot.selectAccessToken)),
+        switchMap(([, token]) => {
+          const _request = request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          return next.handle(_request);
+        }),
       );
     }
 
