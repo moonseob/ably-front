@@ -5,16 +5,18 @@
       <div class="form-field">
         <label for="login-email">이메일</label>
         <input id="login-email" type="text" autocomplete="email" formControlName="email" />
+        <app-formcontrol-error-message [fc]="formGroup.controls.email"></app-formcontrol-error-message>
       </div>
       <div class="form-field">
         <label for="login-password">비밀번호</label>
         <input id="login-password" type="password" autocomplete="current-password" formControlName="password" />
+        <app-formcontrol-error-message [fc]="formGroup.controls.password"></app-formcontrol-error-message>
       </div>
       <app-error-message *ngIf="errorMsg$ | async as error" [message]="error"></app-error-message>
     </section>
     <section class="sidebar">
-      <a class="button" routerLink="/reset"><i class="far fa-question-circle"></i>&nbsp;&nbsp;비밀번호 재설정</a>
-      <button type="submit" class="button accent" [disabled]="isLoading$ | async"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;로그인</button>
+      <a class="button fa question" routerLink="/reset">비밀번호 재설정</a>
+      <button type="submit" class="button accent fa login" [disabled]="isLoading$ | async">로그인</button>
     </section>
   </form>
 </main>

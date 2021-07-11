@@ -6,15 +6,15 @@
     <a
       *ngSwitchCase="false"
       routerLink="/login"
-      class="button accent"
-    ><i class="far fa-user"></i>&nbsp;&nbsp;로그인</a>
+      class="button accent fa login"
+    >로그인</a>
     <ng-container *ngSwitchCase="true">
-      <a class="button" routerLink="/user"><i class="far fa-user"></i>&nbsp;&nbsp;내 정보 보기</a>
+      <a class="button fa user" routerLink="/user">내 정보 보기</a>
       <button
-        class="button"
+        class="button fa logout"
         type="button"
         (click)="logout()"
-      ><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;로그아웃</button>
+      >로그아웃</button>
     </ng-container>
   </section>
 </main>

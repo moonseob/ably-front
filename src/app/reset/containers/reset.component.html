@@ -52,6 +52,6 @@
   </section>
   <section class="sidebar" [ngSwitch]="step < 4">
     <button *ngSwitchCase="true" class="button accent" (click)="onNext()">다음</button>
-    <a routerLink="/login" *ngSwitchCase="false" class="button"><i class="far fa-user"></i>&nbsp;&nbsp;로그인</a>
+    <a routerLink="/login" *ngSwitchCase="false" class="button fa login">로그인</a>
   </section>
 </main>

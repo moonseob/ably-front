@@ -1,7 +1,7 @@
 
 <div class="floating-container">
   <div class="offset-top">
-    <a *ngIf="!(isAtHome$ | async)" routerLink="/"><i class="fas fa-home"></i>&nbsp;&nbsp;메인으로 돌아가기</a>
+    <a *ngIf="!(isAtHome$ | async)" routerLink="/" class="fa home">메인으로 돌아가기</a>
   </div>
   <router-outlet></router-outlet>
 </div>

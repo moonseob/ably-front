@@ -14,10 +14,7 @@ export class LoginComponent implements OnInit {
     email: [
       '',
       {
-        validators: [
-          Validators.required,
-          // TODO: 이메일 형식 검사
-        ],
+        validators: [Validators.required, Validators.email],
       },
     ],
     password: ['', Validators.required],

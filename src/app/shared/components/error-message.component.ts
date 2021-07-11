@@ -4,10 +4,7 @@ import { Component, Input } from '@angular/core';
   selector: 'app-error-message',
   template: `
     <p *ngIf="message" class="error-message">
-      <span class="color-error"
-        ><i class="fas fa-exclamation-circle"></i>&nbsp;&nbsp;에러가
-        발생했습니다:</span
-      ><br />
+      <span class="color-error fa error">에러가 발생했습니다:</span><br />
       <span>{{ message }}</span>
     </p>
   `,
