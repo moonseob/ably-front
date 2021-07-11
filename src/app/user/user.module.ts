@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AuthGuard } from '../shared/services/auth.guard';
 import { UserComponent } from './containers/user.component';
 
 @NgModule({
@@ -12,6 +13,7 @@ import { UserComponent } from './containers/user.component';
         path: '',
         pathMatch: 'full',
         component: UserComponent,
+        canActivate: [AuthGuard],
       },
     ]),
   ],
