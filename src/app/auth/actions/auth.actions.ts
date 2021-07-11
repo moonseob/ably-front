@@ -20,7 +20,7 @@ export const requestLoginSuccess = createAction(
 
 export const requestLoginFailure = createAction(
   '[Auth] Request Login Failure',
-  props<{ err: AblyErrorResponse }>(),
+  props<{ err: AblyErrorResponse | null }>(),
 );
 
 export const requestLogout = createAction(

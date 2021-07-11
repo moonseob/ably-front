@@ -25,8 +25,8 @@ export interface State {
 
 export const initialState: State = {
   // android webview 등 localstorage를 지원하지 않는 환경이 있음
-  accessToken: window.localStorage?.getItem('bearerToken') ?? null,
-  loginLoading: false,
+  accessToken: null,
+  loginLoading: true,
   logoutLoading: false,
   errorMessage: null,
   returnUrl: '/',
@@ -41,6 +41,7 @@ export const reducerInternal = createReducer(
   // init
   on(loginInit, (state) => ({
     ...initialState,
+    loginLoading: false,
   })),
 
   // login
@@ -59,7 +60,7 @@ export const reducerInternal = createReducer(
   on(requestLoginFailure, (state, { err }) => ({
     ...state,
     loginLoading: false,
-    errorMessage: handleError(err),
+    errorMessage: !!err ? handleError(err) : null,
   })),
 
   // logout

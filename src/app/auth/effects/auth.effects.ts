@@ -79,12 +79,14 @@ export class AuthEffects {
   checkLoginOnLoad$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ROOT_EFFECTS_INIT),
-      switchMapTo(of(window.localStorage?.getItem('bearerToken'))),
-      filter((token) => !!token),
-      map((token) => token as string),
-      map((accessToken: string) =>
-        requestLoginSuccess({ res: { accessToken } }),
-      ),
+      map(() => {
+        const lsToken = window.localStorage?.getItem('bearerToken');
+        if (lsToken != undefined) {
+          return requestLoginSuccess({ res: { accessToken: lsToken } });
+        } else {
+          return requestLoginFailure({ err: null });
+        }
+      }),
     ),
   );
 
